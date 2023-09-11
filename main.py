@@ -23,7 +23,7 @@ pg.display.set_mode((width, height), pg.OPENGL | pg.DOUBLEBUF)
 
 glClearColor(0.3, 0.4, 0.5, 1.0)
 # Todo: Enable depth testing here using glEnable()
-
+glEnable()
 
 
 # Todo: Part 3: Write shaders (vertex and fragment shaders) and compile them here
@@ -37,11 +37,27 @@ obj = ObjLoader("objects/raymanModel.obj")
 vertices = np.array(obj.vertices, dtype="float32")
 center = obj.center
 dia = obj.dia
-
+size_position = 3
+size_color = 3
+stride = (size_position + size_color) * 4     # stride is the number of bytes between each vertex
+offset_position = 0                           # offset of the position data
+offset_color = size_position * 4              # offset of the color data. Color data starts after 3 floats (12 bytes) of position data
+n_vertices = len(vertices) // (size_position + size_color)   # number of vertices
+scale = 2.0/dia
+#center = 
+ascpet = width/height
 
 
 # Todo: Part 2: Upload the model data to the GPU. Create a VAO and VBO for the model data.
+vao = glGenVertexArrays(1)
+glBindVertexArray(vao)
 
+vbo = glGenBuffers(1)
+glBindBuffer(GL_ARRAY_BUFFER, vbo)     # Bind the buffer. That is, make it the active one.
+glBufferData(GL_ARRAY_BUFFER,
+             size=vertices.nbytes,
+             data=vertices,
+             usage=GL_STATIC_DRAW)
 
 
 # Todo: Part 4: Configure vertex attributes using the variables defined in Part 1
